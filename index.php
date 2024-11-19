@@ -8,10 +8,11 @@ if (!isset($_SESSION["nome"])){
     exit();
 };
     $id_usuario = $_SESSION['id_usuario'];
-    $stmt = $conn->prepare("SELECT * FROM chamados INNER JOIN usuarios ON usuarios.id_usuario = chamados.fk_usuario"); //WHERE usuarios.id_usuario = ?
-   //  $stmt->bind_param("i",  $id_usuario);
+    $stmt = $conn->prepare("SELECT * FROM chamados INNER JOIN usuarios ON usuarios.id_usuario = chamados.fk_usuario");
     $stmt->execute();
     $resultado = $stmt->get_result();
+
+
 
 if ($resultado->num_rows > 0) {
     echo "
@@ -26,6 +27,7 @@ if ($resultado->num_rows > 0) {
                 <th> Status do chamado </th>
                 <th> Criticidade do chamado </th>
                 <th> Data de abertura do chamado </th>
+                <th> Opções </th>                
             </tr>
         ";
     while ($row = $resultado->fetch_assoc()) {
@@ -39,6 +41,15 @@ if ($resultado->num_rows > 0) {
                     <td> {$row['status_chamado']} </td>
                     <td> {$row['criticidade_chamado']} </td>
                     <td> {$row['data_abertura_chamado']}</td>
+                    <td> <form method='POST' action=''>
+                            <input type='hidden' name='id_chamado' value='{$row['id_chamado']}'>
+                            <input type='submit' name='deletar' value='Deletar Chamado'>
+                        </form>
+                        <form method='POST' action=''>
+                            <input type='hidden' name='id_chamado' value='{$row['id_chamado']}'>
+                            <input type='submit' name='pegar' value='Pegar chamado'>
+                        </form>
+                        </td>
                 </tr>";
     }
     echo "</tbody></table>";
@@ -46,6 +57,41 @@ if ($resultado->num_rows > 0) {
     echo '
         Nenhum chamado encontrado para solicitação.';
 }
+if (isset($_POST["deletar"])){
+    $id_chamado = $_POST['id_chamado'];
+    $sql = "DELETE FROM chamados WHERE id_chamado = ?";
+
+    $stmt_deletar = $conn->prepare($sql);
+    $stmt_deletar->bind_param('i', $id_chamado);
+    $stmt_deletar->execute();
+
+    if ($stmt_deletar->affected_rows > 0) {
+        echo "Registro deletado com sucesso!";
+        header("Location: index.php");
+        exit();
+    } else {
+        echo "Erro ao deletar o registro.";
+    }
+};
+
+if (isset($_POST["pegar"])){
+    $id_chamado = $_POST['id_chamado'];
+    $sql = "UPDATE chamados SET fk_colaborador = ? WHERE id_chamado = ?";
+
+    $stmt_alterar = $conn->prepare($sql);
+    $stmt_alterar->bind_param('ii', $id_usuario, $id_chamado);
+    $stmt_alterar->execute();
+
+    if ($stmt_alterar->affected_rows > 0) {
+        echo "Chamado coletado pelo seu ID!";
+        echo "<br>Talvez seja necessário atualizar a página!";
+        header("Location: index.php");
+        exit();
+    } else {
+        echo "Erro ao coletar registro.";
+    }
+};
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -57,5 +103,10 @@ if ($resultado->num_rows > 0) {
     <a href="criar_chamado.php"><button>Criar chamado</button></a>
     <br>
     <a href="login.php"><button>Voltar</button></a>
+
+<form method="POST">
+    <p></p>
+</form>
+
 </body>
 </html> 

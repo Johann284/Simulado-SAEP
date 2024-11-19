@@ -104,9 +104,6 @@ if (isset($_POST["pegar"])){
     <br>
     <a href="login.php"><button>Voltar</button></a>
 
-<form method="POST">
-    <p></p>
-</form>
 
 </body>
 </html> 

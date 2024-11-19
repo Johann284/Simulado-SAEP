@@ -67,6 +67,7 @@ if (isset($_POST["deletar"])){
 
     if ($stmt_deletar->affected_rows > 0) {
         echo "Registro deletado com sucesso!";
+        echo "<br>Talvez seja necessário atualizar a página!";
         header("Location: index.php");
         exit();
     } else {

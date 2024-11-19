@@ -15,7 +15,7 @@ if (!isset($_SESSION["nome"])){
 
 if ($resultado->num_rows > 0) {
     echo "
-        <table class='table'>
+        <table border='1'>
             <tr>
                 <th> ID do Chamado </th>
                 <th> ID do cliente </th>
@@ -30,7 +30,7 @@ if ($resultado->num_rows > 0) {
         ";
     while ($row = $resultado->fetch_assoc()) {
         echo "<tr>
-                    <td id='id-tabela'> {$row['id_chamado']} </td>
+                    <td> {$row['id_chamado']} </td>
                     <td> {$row['fk_usuario']} </td>
                     <td> {$row['email_usuario']} </td>
                     <td> {$row['telefone_usuario']} </td>
@@ -53,10 +53,9 @@ if ($resultado->num_rows > 0) {
 
 </head>
 <body>
-    <form method="POST">
-    <a href="/criar_chamado.php"><button>Criar chamado</button></a>
-        <button name="atualizar">Atualizar lista</button>
-        <button name="sair">Sair</button>
-    </form>
+    <br>
+    <a href="criar_chamado.php"><button>Criar chamado</button></a>
+    <br>
+    <a href="login.php"><button>Voltar</button></a>
 </body>
 </html> 

@@ -60,5 +60,7 @@ if (isset($_POST["cadastrar"])) {
         <input type="submit" value="cadastrar" name="cadastrar">
     </form>
 
+    <a href="index.php"><button>Voltar</button></a>
+
 </body>
 </html> 

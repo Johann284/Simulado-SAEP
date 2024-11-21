@@ -22,6 +22,8 @@ if (isset($_POST["entrar"])) {
             $_SESSION['email'] = $row['email_usuario'];
             $_SESSION['tipo'] = $row['tipo_usuario'];
             $_SESSION['id_usuario'] = $row['id_usuario'];
+            $_SESSION['cpf_usuario'] = $row['cpf_usuario'];
+
 
             header("Location: index.php");
             exit();

@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "root";
-$dbname = "SAEP_praticaUm";
+$dbname = "SAEP_praticaDois";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

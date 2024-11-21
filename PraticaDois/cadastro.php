@@ -40,7 +40,14 @@ if (isset($_POST["cadastrar"])) {
         return true;
     
     }
-    if (ehCPF($cpf) === true){
+    function ehTelefone($telefone_usuario){
+        if  (strlen($telefone_usuario) >= 8 AND strlen($telefone_usuario) <= 9){
+            return true;
+        } else {
+            echo '<br><br>Digite um telefone válido, contendo 8 ou 9 dígitos. <br>';
+        }
+    }
+    if (ehCPF($cpf) === true AND ehTelefone($telefone_usuario)){
 
         $stmt = $conn->prepare("SELECT * FROM usuarios WHERE nome_usuario = ? OR email_usuario = ? OR cpf_usuario = ?");
         $stmt->bind_param("sss",  $login_usuario, $email_usuario, $cpf);
@@ -65,7 +72,7 @@ if (isset($_POST["cadastrar"])) {
         
         };
     } else{
-        echo " <br> Os valores digitados não são válidos <br>";
+        echo " <br> Os valores digitados não são válidos <br><br><br>";
     }
    
 }

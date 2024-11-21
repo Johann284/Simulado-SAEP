@@ -2,40 +2,78 @@
 include "db_connect.php";
 echo "tela cadastro";
 session_start();
-if ($_SESSION['tipo_usuario'] == 'funcionario'){
-    echo 'Cadastrar novo funcionário:';
-    echo "<a href='cadastrar_funcionario'><button>Cadastrar Funcionário</button></a>";
-}
+
 if (isset($_POST["cadastrar"])) {
     $login_usuario = $_POST['login'];
     $senha_usuario = $_POST['senha'];
     $email_usuario = $_POST['email'];
     $telefone_usuario = $_POST['telefone'];
-    $cpf_usuario = $_POST['cpf'];
+    $cpf = $_POST['cpf'];
 
 
-    $stmt = $conn->prepare("SELECT * FROM usuarios WHERE nome_usuario = ? OR email_usuario = ? OR cpf_usuario = ?");
-    $stmt->bind_param("sss",  $login_usuario, $email_usuario, $cpf_usuario);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-    
-    if ($resultado->num_rows > 0) {
-        echo "<br>Um usuário com este nome ou email já existe";
-      } else {
-        $stmt = $conn->prepare("INSERT INTO usuarios (nome_usuario, senha_usuario, email_usuario, telefone_usuario, tipo_usuario, cpf_usuario) VALUES (?, ?, ?, ?, 'funcionario', ?)");
-        $stmt->bind_param("sssis", $login_usuario, $senha_usuario, $email_usuario, $telefone_usuario, $cpf_usuario);
-        $stmt->execute();
-        $sql = "INSERT INTO usuarios (nome_usuario, senha_usuario, email_usuario, telefone_usuario, tipo_usuario, cpf_usuario) VALUES ('$login_usuario', '$senha_usuario', '$email_usuario', $telefone_usuario, 'funcionario', '$cpf_usuario');";
-        
-        if ($conn->query($sql) === TRUE) {
-            echo "<div style='color: green;'>Cadastro realizado com sucesso!</div>";
-            header("Location: login.php");
-            exit();
-        } else {
-            echo "<div style='color: red;'>Erro: " . $conn->error . "</div>";
+    // |créditos| função para verificar cpf matematicamente pega em: https://gist.github.com/rafael-neri/ab3e58803a08cb4def059fce4e3c0e40
+ 
+    function ehCPF($cpf) { // 
+        // Extrai somente os números
+        $cpf = preg_replace( '/[^0-9]/is', '', $cpf );
+         
+        // Verifica se foi informado todos os digitos corretamente
+        if (strlen($cpf) != 11) {
+            return false;
         }
-       
-    };
+    
+        // Verifica se foi informada uma sequência de digitos repetidos. Ex: 111.111.111-11
+        if (preg_match('/(\d)\1{10}/', $cpf)) {
+            return false;
+        }
+    
+        // Faz o calculo para validar o CPF
+        for ($t = 9; $t < 11; $t++) {
+            for ($d = 0, $c = 0; $c < $t; $c++) {
+                $d += $cpf[$c] * (($t + 1) - $c);
+            }
+            $d = ((10 * $d) % 11) % 10;
+            if ($cpf[$c] != $d) {
+                return false;
+            }
+        }
+        return true;
+    
+    }
+    function ehTelefone($telefone_usuario){
+        if  (strlen($telefone_usuario) >= 8 AND strlen($telefone_usuario) <= 9){
+            return true;
+        } else {
+            echo '<br><br>Digite um telefone válido, contendo 8 ou 9 dígitos. <br>';
+        }
+    }
+    if (ehCPF($cpf) === true AND ehTelefone($telefone_usuario)){
+
+        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE nome_usuario = ? OR email_usuario = ? OR cpf_usuario = ?");
+        $stmt->bind_param("sss",  $login_usuario, $email_usuario, $cpf);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        
+        if ($resultado->num_rows > 0) {
+            echo "<br>Um usuário com este nome ou email já existe";
+        } else {
+            $stmt = $conn->prepare("INSERT INTO usuarios (nome_usuario, senha_usuario, email_usuario, telefone_usuario, tipo_usuario, cpf_usuario) VALUES (?, ?, ?, ?, 'funcionario', ?)");
+            $stmt->bind_param("sssis", $login_usuario, $senha_usuario, $email_usuario, $telefone_usuario, $cpf);
+            $stmt->execute();
+            $sql = "INSERT INTO usuarios (nome_usuario, senha_usuario, email_usuario, telefone_usuario, tipo_usuario, cpf_usuario) VALUES ('$login_usuario', '$senha_usuario', '$email_usuario', $telefone_usuario, 'funcionario', '$cpf');";
+            
+            if ($conn->query($sql) === TRUE) {
+                echo "<div style='color: green;'>Cadastro realizado com sucesso!</div>";
+                header("Location: login.php");
+                exit();
+            } else {
+                echo "<div style='color: red;'>Erro: " . $conn->error . "</div>";
+            }
+        
+        };
+    } else{
+        echo " <br> Os valores digitados não são válidos <br><br><br>";
+    }
    
 }
 ?>

@@ -4,12 +4,12 @@ echo "tela criar solicitacao";
 session_start();
 if (isset($_POST["cadastrar_solicitacao"])) {
     $descricao = $_POST['descricao'];
-    $criticidade = $_POST['criticidade'];
+    $urgencia = $_POST['urgencia'];
     $id_usuario = $_SESSION['id_usuario'];
     $data_abertura = date("Ymd"); // ano, mes, dia 
     
     
-    $sql = "INSERT INTO solicitacoes (fk_usuario, descricao_solicitacao, status_solicitacao, criticidade_solicitacao, data_abertura_solicitacao) VALUES ('$id_usuario', '$descricao', 'Pendente', '$criticidade', '$data_abertura');";
+    $sql = "INSERT INTO solicitacoes (fk_usuario, descricao_solicitacao, status_solicitacao, urgencia_solicitacao, data_abertura_solicitacao) VALUES ('$id_usuario', '$descricao', 'Pendente', '$urgencia', '$data_abertura');";
 
     if ($conn->query($sql) === TRUE) {
         echo "<div style='color: green;'>solicitação realizado com sucesso!</div>";
@@ -31,9 +31,9 @@ if (isset($_POST["cadastrar_solicitacao"])) {
             <textarea name="descricao" rows="4" cols="50"></textarea>
         </div>
         <div>
-            <label for="criticidade">Digite a criticidade do solicitacao</label>
-            <select name="criticidade">
-                <option disabled>Selecione a criticidade do solicitacao</option>
+            <label for="urgencia">Digite a urgência do solicitacao</label>
+            <select name="urgencia">
+                <option disabled>Selecione a urgência do solicitacao</option>
                 <option value="Alta">Alta</option>
                 <option value="Média">Média</option>
                 <option value="Baixa">Baixa</option>

@@ -20,17 +20,17 @@ $id_usuario = $_SESSION['id_usuario'];
 
 if (isset($_POST['filtro_urgencia'])){
     $urgencia = $_POST['urgencia'];
-    $stmt = $conn->prepare("SELECT * FROM solicitacoes INNER JOIN usuarios ON usuarios.id_usuario = solicitacoes.fk_usuario WHERE urgencia_solicitacao = '$urgencia'");
+    $stmt = $conn->prepare("SELECT * FROM solicitacoes INNER JOIN usuarios ON usuarios.id_usuario = solicitacoes.fk_usuario WHERE urgencia_solicitacao = '$urgencia';");
     $stmt->execute();
     $resultado = $stmt->get_result();
 } elseif (isset($_POST['filtro_funcionario'])){
     $funcionario = $_POST['funcionario'];
-    $stmt = $conn->prepare("SELECT * FROM solicitacoes INNER JOIN usuarios ON usuarios.id_usuario = solicitacoes.fk_usuario WHERE nome_usuario = '$funcionario'");
+    $stmt = $conn->prepare("SELECT * FROM solicitacoes INNER JOIN usuarios ON usuarios.id_usuario = solicitacoes.fk_usuario WHERE fk_colaborador = '$funcionario';");
     $stmt->execute();
     $resultado = $stmt->get_result();
 } elseif (isset($_POST['filtro_status'])){
     $status = $_POST['status'];
-    $stmt = $conn->prepare("SELECT * FROM solicitacoes INNER JOIN usuarios ON usuarios.id_usuario = solicitacoes.fk_usuario WHERE status_solicitacao = '$status'");
+    $stmt = $conn->prepare("SELECT * FROM solicitacoes INNER JOIN usuarios ON usuarios.id_usuario = solicitacoes.fk_usuario WHERE status_solicitacao = '$status';");
     $stmt->execute();
     $resultado = $stmt->get_result();
 } else if(isset($_POST['cancelar'])) {
@@ -134,18 +134,18 @@ $result_funcionarios = $stmt_funcionarios->get_result();
     <form method="POST">
         <label for="status">Status</label>
         <select name="status" id="">
-            <option value="pendente">Pendente</option>
-            <option value="andamento">Em andamento</option>
-            <option value="finalizada">Finalizada</option>
+            <option value="Pendente">Pendente</option>
+            <option value="Em Andamento">Em andamento</option>
+            <option value="Finalizada">Finalizada</option>
         </select>
         <input type="submit" name="filtro_status" value="Filtrar">
         </form>
     <form method="POST">
         <label for="urgencia">Urgência</label>
         <select name="urgencia" id="">
-            <option value="alta">Alta</option>
-            <option value="media">Média</option>
-            <option value="baixa">Baixa</option>
+            <option value="Alta">Alta</option>
+            <option value="Média">Média</option>
+            <option value="Baixa">Baixa</option>
         </select>
         <input type="submit" name="filtro_urgencia" value="Filtrar">
     </form>
@@ -178,7 +178,7 @@ $result_funcionarios = $stmt_funcionarios->get_result();
                     <th> ID do colaborador (Pode estar vazio) </th>
                     <th> Descrição do solicitacao </th>
                     <th> Status do solicitacao </th>
-                    <th> Criticidade do solicitacao </th>
+                    <th> Urgência do solicitacao </th>
                     <th> Data de abertura do solicitacao </th>
                     <th> Opções </th>                
                 </tr>
